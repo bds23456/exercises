@@ -6,11 +6,13 @@ import matplotlib.pyplot as plt
 def main():
     print("Это программа выполнения упражнений по работе с библиотеками" +"\n" +
         "NumPy, MatPlotLib, mpl_toolkits.mplot3d. " + "\n" +
-        "1. Расчет логарифма по основанию (1+х^2) от выражения " + "\n" +
+        "Вы можете выбрать реализацию одного из следующих упражнений:"
+        "1. Расчет логарифма по основанию (1+х^2) от выражения " +
         "е^(1/(sin(x)+1) / (5/4 + 1/x^15)" + "\n" +
         "2. Построение графика функции x^2" + "\n" +
         "3. Построение графика диаграммы " + "\n" +
-        "4. Построение 3D-графика функции z = x^2 - y^2 " + "\n\n" +
+        "4. Построение 3D-графика функции z = x^2 - y^2 " + "\n" +
+        "5. Построение графика функции y(x)=x^2-x-6 с нахождением корней" + "\n\n" +
         "Введите 0 для выхода"+ "\n")
     answer = int(input("Что выберем? "))
     menu(answer)
@@ -33,7 +35,7 @@ def plot_1_x():
     #plt.axis('equal')
     plt.xlabel(r'$x$')
     plt.ylabel(r'$f(x)$')
-    plt.title(r'$f(x)=x^3$')
+    plt.title(r'$f(x)=x^2$')
     plt.grid(True)
     plt.show()
 
@@ -55,6 +57,21 @@ def plot_3_3Daxis():
     ax.plot_wireframe(X, Y, Z, rstride=10, cstride=10)
     plt.show()
 
+def plot_4_x():
+    #Exercises #2 - plotting x^2-x-6 and find solutions
+    x = np.arange(-3.5, 4.51, 0.01)
+    t = np.arange(-2, -1, 1)
+    y = np.arange(3, 4, 1)
+    plt.plot(x, x**2-x-6, t, t+2, 'ro', y, y-3, 'ro')
+    plt.xlabel(r'$x$')
+    plt.ylabel(r'$f(x)$')
+    plt.title(r'$f(x)=x^2-x-6$')
+    plt.grid(True)
+    sp = plt.subplot(111)
+    sp.spines['left'].set_position('zero')
+    sp.spines['bottom'].set_position('zero')
+    plt.show()
+
 def menu(answer):
     if answer == 0:
         return
@@ -67,6 +84,8 @@ def menu(answer):
         plot_2_diagram()
     elif answer == 4 :
         plot_3_3Daxis()
+    elif answer == 5 :
+        plot_4_x()   
     else :
         print("Невозможное значение ")
 
