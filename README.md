@@ -13,3 +13,5 @@ exercises from the MIPT course
 
 2.py - Рисование с испольованием библиотеки PyGame (http://cs.mipt.ru/python/lessons/lab2.html , http://cs.mipt.ru/python/lessons/lab4.html)
     Рисование домика с окошком, штрихованного квадрата и злого смайлика. Выполняется все в одном окне.
+
+3.py - Реализация игры "Поймай шарик" (http://cs.mipt.ru/python/lessons/lab6.html)
