@@ -1,6 +1,7 @@
 import pygame
 from pygame.draw import *
 from random import randint
+from color import *
 pygame.init()
 
 def main():
@@ -55,17 +56,7 @@ def catch_the_ball():
     screen_width = 500
     screen_height = 500
     screen = pygame.display.set_mode((screen_width, screen_height))
-
-    RED = (255, 0, 0)
-    BLUE = (0, 0, 255)
-    YELLOW = (255, 255, 0)
-    GREEN = (0, 255, 0)
-    MAGENTA = (255, 0, 255)
-    CYAN = (0, 255, 255)
-    BLACK = (0, 0, 0)
-    WHITE = (255, 255, 255)
-    COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
-             
+        
     def hit(x, y, r, x_mouse, y_mouse) :
         if (x_mouse - x)**2 + (y_mouse - y)**2 < r**2 :
             return True
