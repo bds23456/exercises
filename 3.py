@@ -3,8 +3,6 @@ from pygame.draw import *
 from random import randint
 pygame.init()
 
-x, y, r, score = 0, 0, 0, 0
-
 def main():
     answer = 0
     answer = int(input("1. Рисование кружков мышью" + "\n" +
@@ -53,10 +51,9 @@ def drawing_circle_by_mouse ():
     pygame.quit()
 
 def catch_the_ball():
-    global score
-    FPS = 30
-    screen_width = 400
-    screen_height = 400
+    FPS = 40
+    screen_width = 500
+    screen_height = 500
     screen = pygame.display.set_mode((screen_width, screen_height))
 
     RED = (255, 0, 0)
@@ -66,54 +63,57 @@ def catch_the_ball():
     MAGENTA = (255, 0, 255)
     CYAN = (0, 255, 255)
     BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
     COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
-
-    def new_ball(n=1):
-        '''drawing n new moving balls '''
-        global x, y, r             
-        speed_x = randint(-10, 10) / 100
-        speed_y = randint(-10, 10) / 100
-        for __ in range(n) :
-            x = randint(50, screen_width-50)
-            y = randint(50, screen_height-50)
-            r = randint(10, 60)
-            color = COLORS[randint(0, 5)]                
-            for __ in range(1000) :
-                circle(screen, color, (x, y), r)
-                pygame.display.update()
-                screen.fill(BLACK)                
-                x += speed_x
-                if (x > screen_width - r) or (x < r) :
-                    speed_x = -speed_x
-                y += speed_y
-                if (y > screen_height - r) or (y < r) :
-                    speed_y = -speed_y
-
-    def click (event) :        
-        global x, y, r, score
-        if (event.pos[0] - x)**2 + (event.pos[1] - y)**2 < r**2 :
-            print("Поймали! ")
-            score += 1
-            pygame.display.set_caption("Ваш счет= " + str(score))
-            x = -1000
+             
+    def hit(x, y, r, x_mouse, y_mouse) :
+        if (x_mouse - x)**2 + (y_mouse - y)**2 < r**2 :
+            return True
         else :
-            print("Промах...")
+            return False
+
+    def click (event) :  
+        global ball, score
+        if hit(ball[0], ball[1], ball[2], event.pos[0], event.pos[1]) :
+            print("Поймали! ")
+            score += 1 
+            pygame.display.set_caption("Ваш счет= " + str(score))
+            ball = new_ball()
+        else :
+            print("Промах...")     
+        
+    def new_ball():
+        return [randint(50, screen_width-50),     #x
+                randint(50, screen_height-50),    #y
+                randint(20, 50),                  #r
+                randint(-10, 10),                 #Vx
+                randint(-10, 10),                 #Vy
+                COLORS[randint(0, 5)]]            #color
 
     pygame.display.update()
     clock = pygame.time.Clock()
     finished = False
-
+    global score 
+    score = 0
+    global ball
+    ball = new_ball()  
+    
     while not finished:
-        clock.tick(FPS)
+        clock.tick(FPS)        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 finished = True
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 click(event)                
-        new_ball()
-        
+        screen.fill(BLACK)
+        circle(screen, ball[5], (ball[0], ball[1]), ball[2])  
+        pygame.display.update()          
+        ball[0] += ball[3]
+        ball[1] += ball[4]
+        if (ball[0] > screen_width - ball[2]) or (ball[0] < ball[2]) :
+            ball[3] *= -1                
+        if (ball[1] > screen_height - ball[2]) or (ball[1] < ball[2]) :
+            ball[4] *= -1    
     pygame.quit()
 
-
-#main()
-catch_the_ball()
+main()
