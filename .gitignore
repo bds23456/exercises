@@ -73,6 +73,7 @@ docs/_build/
 
 # PyBuilder
 target/
+gun_obfuscated.py
 
 # Jupyter Notebook
 .ipynb_checkpoints

@@ -1,4 +1,4 @@
-import math
+import numpy as np
 from random import choice, randint
 import pygame
 from color import *
@@ -7,7 +7,6 @@ FPS = 30
 
 WIDTH = 800
 HEIGHT = 600
-
 
 class Gun:
     def __init__(self, screen):
@@ -36,9 +35,9 @@ class Gun:
         bullet += 1
         new_ball = Ball(self.screen)
         new_ball.r += 5
-        self.an = math.atan2((event.pos[1]-new_ball.y), (event.pos[0]-new_ball.x))
-        new_ball.vx = self.f2_power * math.cos(self.an) / level
-        new_ball.vy = - self.f2_power * math.sin(self.an) / level
+        self.an = np.arctan2((event.pos[1]-new_ball.y), (event.pos[0]-new_ball.x))
+        new_ball.vx = self.f2_power * np.cos(self.an) / level
+        new_ball.vy = - self.f2_power * np.sin(self.an) / level
         balls.append(new_ball)
         self.f2_on = 0
         self.f2_power = 10
@@ -55,39 +54,29 @@ class Gun:
 
     def targetting(self, event):
         """Прицеливание. Зависит от положения мыши."""
-        if event:
-            if event.pos[0]-40 == 0 : #division by 0 defence
-                self.an = 45
-            else :
-                self.an = math.atan((event.pos[1]-450) / (event.pos[0]-40))
-                self.rotate(self.an)
+        if pygame.mouse.get_focused():
+            mouse_pos = pygame.mouse.get_pos()
+            self.set_angle(mouse_pos)
         if self.f2_on:
             self.color = RED
         else:
             self.color = GREY
 
+    def set_angle(self, target_pos):
+        '''Sets gun's direction to target position.'''
+        self.an = np.arctan2(target_pos[1] - self.y, target_pos[0] - self.x)
+
     def draw(self):
-        pygame.draw.polygon(self.screen, 
-                            self.color, 
-                            [(self.x, self.y), 
-                            (self.x, self.y + 10),
-                            (self.x + 10 + self.f2_power, self.y + 10 - self.f2_power),
-                            (self.x + 10 + self.f2_power, self.y - self.f2_power)]) 
-
-
-    # FIXIT don't know how to do it
-    def rotate(self, angle):        
-        angle = (180 / math.pi) * -angle
-        self.image = pygame.transform.rotate(self.screen, int(angle))
-        self.polygon = self.image.get_rect()
-        pygame.draw.polygon(self.screen, 
-                            self.color, 
-                            [self.polygon.topleft, 
-                            self.polygon.bottomleft, 
-                            self.polygon.bottomright, 
-                            self.polygon.topright])
-
-
+        '''Draws the gun on the screen.'''
+        gun_shape = []
+        vec_1 = np.array([int(7*np.cos(self.an - np.pi/2)), int(7*np.sin(self.an - np.pi/2))])
+        vec_2 = np.array([int(2*self.f2_power*np.cos(self.an)), int(2*self.f2_power*np.sin(self.an))])
+        gun_pos = np.array([self.x, self.y])
+        gun_shape.append((gun_pos + vec_1).tolist())
+        gun_shape.append((gun_pos + vec_1 + vec_2).tolist())
+        gun_shape.append((gun_pos + vec_2 - vec_1).tolist())
+        gun_shape.append((gun_pos - vec_1).tolist())
+        pygame.draw.polygon(self.screen, self.color, gun_shape)
 
 class Ball:
     def __init__(self, screen: pygame.Surface, x=40, y=450):
@@ -191,7 +180,7 @@ class Target:
         if (self.y < self.r) or (self.y > 600 - self.r) :
             self.vy *= -1
 
-def text() :
+def score_table() :
     textSurfaceObj1 = fontObj.render("Игра \"Пушка\". ", True, BLACK)
     textSurfaceObj2 = fontObj.render("Сделано выстрелов: " + str(bullet), True, BLACK)
     textSurfaceObj3 = fontObj.render("Попаданий: " + str(all_points), True, BLACK)
@@ -206,7 +195,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Игра \"Пушка\" ")
 bullet = 0
 all_points = 0
-level = 3
+level = 6
 balls = []
 targets = []
 
@@ -219,7 +208,7 @@ fontObj = pygame.font.Font(None, 30)
 
 while not finished:
     screen.fill(WHITE)
-    text()
+    score_table()
     gun.draw()
     for t in targets :
         t.draw()
