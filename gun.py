@@ -193,18 +193,19 @@ def score_table() :
 pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Игра \"Пушка\" ")
+clock = pygame.time.Clock()
+fontObj = pygame.font.Font(None, 30)
+
 bullet = 0
 all_points = 0
 level = 6
 balls = []
 targets = []
-
-clock = pygame.time.Clock()
 gun = Gun(screen)
 for i in range(level) :
     targets.append(Target(screen))
 finished = False
-fontObj = pygame.font.Font(None, 30)
+
 
 while not finished:
     screen.fill(WHITE)
@@ -238,6 +239,5 @@ while not finished:
                 t.hit()
                 all_points += t.points
                 t.new_target()                
-    
 
 pygame.quit()
